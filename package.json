@@ -1,0 +1,50 @@
+{
+  "name": "mial-crm-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "prestart": "npm run build",
+    "postinstall": "npm run build",
+    "start": "node --inspect=5858 -r ts-node/register ./app/index.ts",
+    "start:watch": "nodemon",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
+    "prepare": "husky install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/swagger": "^6.0.0",
+    "axios": "^0.27.2",
+    "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.1",
+    "fastify": "^3.29.0",
+    "fastify-cors": "^6.1.0",
+    "fastify-multipart": "^5.3.1",
+    "fastify-swagger": "^5.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mariadb": "^3.0.0",
+    "moment": "^2.29.3",
+    "nanoid": "^3.3.4",
+    "nodemailer": "^6.7.5",
+    "nodemailer-sendgrid": "^1.0.3",
+    "pino-pretty": "^7.6.1",
+    "read-excel-file": "^5.3.4",
+    "sequelize": "^6.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.35",
+    "@types/validator": "^13.7.2",
+    "husky": "^8.0.1",
+    "nodemon": "^2.0.16",
+    "prettier": "^2.6.2",
+    "ts-node": "^10.8.0",
+    "tslint": "^6.1.3",
+    "tslint-config-airbnb": "^5.11.2",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.7.2"
+  }
+}
