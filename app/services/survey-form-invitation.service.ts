@@ -15,8 +15,8 @@ import {
 
 import {
   Q_MINIMUM_SIZE,
-  SURVEY_FORM_INVITATAION_STATUS,
-  SURVEY_FORM_INVITATION_TYPE
+  SURVEY_FORM_INVITATION_TYPE,
+  SURVEY_FORM_INVITATAION_STATUS
 } from '../config/constants';
 
 import {
@@ -46,8 +46,6 @@ function getSurveyForminvitationById(id: number) {
 }
 
 async function checkInvitationSentStatus(attrs, surveyFormId, type) {
-  console.log("contact", attrs.contact);
-
   const isAlreadySent = await SurveyFormInvitation.findOne({
     where: {
       type,
@@ -63,20 +61,15 @@ async function checkInvitationSentStatus(attrs, surveyFormId, type) {
 }
 
 async function createInvitation(attrs: SurveyFormInvitationCreateParams) {
-  try {
-    const surveyInvitation = await SurveyFormInvitation.create({
-      type: attrs.type,
-      user_id: attrs.user_id,
-      call_id: attrs.call_id,
-      contact: attrs.contact,
-      survey_form_id: attrs.survey_form_id,
-      invitation_url: attrs.invitation_url,
-      status: SURVEY_FORM_INVITATAION_STATUS.sent,
-    });
-    return surveyInvitation;
-  } catch (error) {
-    throw error;
-  }
+  return await SurveyFormInvitation.create({
+    type: attrs.type,
+    user_id: attrs.user_id,
+    call_id: attrs.call_id,
+    contact: attrs.contact,
+    survey_form_id: attrs.survey_form_id,
+    invitation_url: attrs.invitation_url,
+    status: SURVEY_FORM_INVITATAION_STATUS.sent,
+  });
 }
 
 async function verifyAndSendInvitation(
@@ -184,30 +177,26 @@ async function surveyFormInvitationDetail(id: number) {
   return invitationData;
 }
 
-async function createSurveyFormInvitationUrl(
+async function getActiveSurveyForm(
   attrs: SurveyFormInvitationParams
 ) {
-  try {
-    const surveyForm = await SurveyForm.findOne({ where: { is_active: true } });
-
-    if (surveyForm) {
-      await checkInvitationSentStatus(attrs, surveyForm.id, SURVEY_FORM_INVITATION_TYPE.mobile);
-
-      const agent = await Agent.findByPk(attrs.agent_id);
-      if (!agent) throw new Error('Agent id not found');
-
-      const user = await User.findOne({ where: { agent_code: agent.number } });
-      if (!user) throw new Error('Agent not found');
-
-      const token = nanoid.nanoid(10);
-      return `${process.env.SURVEY_FORM_INVITATION_URL}?t=${token}`;
-
-    }
+  const surveyForm = await SurveyForm.findOne({ where: { is_active: true } });
+  if (!surveyForm) {
     throw new EmptyResultError('Survey Form not found');
-  } catch (error) {
-    console.log({ error });
+  }
 
-    throw error;
+  await checkInvitationSentStatus(attrs, surveyForm.id, SURVEY_FORM_INVITATION_TYPE.mobile);
+
+  const agent = await Agent.findByPk(attrs.agent_id);
+  if (!agent) throw new Error('Agent id not found');
+
+  const user = await User.findOne({ where: { agent_code: agent.number } });
+  if (!user) throw new Error('Agent not found');
+
+ return {
+    name: surveyForm.name,
+    questions: surveyForm.questions,
+    survey_form_id: surveyForm.id
   }
 }
 
@@ -227,7 +216,7 @@ export {
   createInvitation,
   resentInvitation,
   filterAndPaginate,
+  getActiveSurveyForm,
   verifyAndSendInvitation,
-  surveyFormInvitationDetail,
-  createSurveyFormInvitationUrl
+  surveyFormInvitationDetail
 };

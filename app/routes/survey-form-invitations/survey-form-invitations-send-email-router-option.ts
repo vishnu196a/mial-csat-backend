@@ -1,8 +1,8 @@
-import { headers } from '../shared-schema';
+import { headers, questions } from '../shared-schema';
 
-const surveyFormEmailRouterOpts = {
+const getActiveSurveyFormRouterOpts = {
   headers,
-  description: 'send survey form invitation',
+  description: 'get active survey form',
   tags: [
     'ivr',
     'survey-form-invitations'
@@ -16,10 +16,12 @@ const surveyFormEmailRouterOpts = {
   },
   response: {
     200: {
-      description: 'Successfully sent survey form invitation',
+      description: 'Active Survey form',
       type: 'object',
       properties: {
-        message: { type: 'string' }
+        name: { type: 'string' },
+        questions: { ...questions },
+        survey_form_id: { type: 'number' },
       }
     },
     500: {
@@ -32,4 +34,4 @@ const surveyFormEmailRouterOpts = {
   }
 };
 
-export default surveyFormEmailRouterOpts;
+export default getActiveSurveyFormRouterOpts;

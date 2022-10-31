@@ -1,6 +1,6 @@
 import { headers } from '../shared-schema';
 
-const surveyFormCreateRouterOpts = {
+const createSurveyFormInvitationRouterOpts = {
   headers,
   description: 'create survey form invitation',
   tags: [
@@ -37,4 +37,4 @@ const surveyFormCreateRouterOpts = {
   }
 };
 
-export default surveyFormCreateRouterOpts;
+export default createSurveyFormInvitationRouterOpts;

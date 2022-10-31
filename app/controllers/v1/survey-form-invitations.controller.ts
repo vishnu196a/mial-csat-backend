@@ -6,9 +6,9 @@ import {
   createInvitation,
   resentInvitation,
   filterAndPaginate,
+  getActiveSurveyForm,
   verifyAndSendInvitation,
-  surveyFormInvitationDetail,
-  createSurveyFormInvitationUrl
+  surveyFormInvitationDetail
 } from '../../services/survey-form-invitation.service';
 
 import {
@@ -16,7 +16,6 @@ import {
   SurveyFormInvitationCreateParams,
   SurveyFormInvitationListQueryParams
 } from '../../types';
-
 
 function sendInvitation(req: FastifyRequest, reply: FastifyReply) {
   const { t: token } = req.query as { t: string };
@@ -55,11 +54,11 @@ function detail(req: FastifyRequest, reply: FastifyReply) {
     });
 }
 
-function createInvitationUrl(req: FastifyRequest, reply: FastifyReply) {
+function activeSurveyForm(req: FastifyRequest, reply: FastifyReply) {
   const queryParams = req.query as SurveyFormInvitationParams;
-  createSurveyFormInvitationUrl(queryParams)
-    .then((invitationUrl) => {
-      reply.code(201).send({ invitationUrl });
+  getActiveSurveyForm(queryParams)
+    .then((activeSurveyForm) => {
+      reply.code(200).send(activeSurveyForm);
     })
     .catch((error) => {
       if (error instanceof ValidationError) {
@@ -106,6 +105,6 @@ export {
   detail,
   resend,
   sendInvitation,
-  createInvitationUrl,
+  activeSurveyForm,
   createSurveyFormInvitation
 };
