@@ -6,7 +6,7 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(`${__dirname}/../../db/config.json`)[env];
 
 const db = new Sequelize(process.env[config.use_env_variable] as string, {
-  logging: logger.debug.bind(logger),
+  // logging: logger.debug.bind(logger),
   dialectOptions: {
     useUTC: false,
     timezone: '+00:00' // for reading the data

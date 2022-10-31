@@ -2,9 +2,9 @@ export * from './user';
 export * from './role';
 export * from './agent';
 export * from './survey-form';
-export * from './users.controller';
 export * from './sessions.controller';
 export * from './survey-form-response';
 export * from './survey-form-invitation';
 export * from './survey-forms.contreller';
 export * from './survey-form-responses.controller';
+export * from './survey-form-invitations.controller'

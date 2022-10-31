@@ -1,22 +1,27 @@
 import { headers } from '../shared-schema';
 
-const surveyFormEmailRouterOpts = {
+const surveyFormCreateRouterOpts = {
   headers,
-  description: 'send survey form invitation',
+  description: 'create survey form invitation',
   tags: [
     'ivr',
     'survey-form-invitations'
   ],
-  querystring: {
+  body: {
     type: 'object',
     properties: {
+      type: { type: 'string', enum: ['SMS', 'Email'] },
       call_id: { type: 'number' },
-      contact: { type: 'string' }
+      contact: { type: 'string' },
+      user_id: { type: 'number' },
+      agent_id: { type: 'number' },
+      survey_form_id: { type: 'number' },
+      invitation_url: { type: 'string' }
     }
   },
   response: {
     200: {
-      description: 'Successfully sent survey form invitation',
+      description: 'Survey form invitation Created Successfully ',
       type: 'object',
       properties: {
         message: { type: 'string' }
@@ -32,4 +37,4 @@ const surveyFormEmailRouterOpts = {
   }
 };
 
-export default surveyFormEmailRouterOpts;
+export default surveyFormCreateRouterOpts;
