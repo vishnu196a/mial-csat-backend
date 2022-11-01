@@ -20,7 +20,7 @@ function addUser(req: FastifyRequest, reply: FastifyReply) {
   const currentUser = req.currentUser;
   add(params).then((user) => {
     activityLogger.log(currentUser, user, 'user', 'created');
-    reply.code(201).send({ message: "User add synced Successfully" });
+    reply.code(201).send({ message: 'User add synced Successfully' });
   })
     .catch((error: FastifyError) => {
       reply.send(error);
@@ -36,7 +36,7 @@ function updateUser(req: FastifyRequest, reply: FastifyReply) {
       update(id, attrs)
         .then((updatedUser) => {
           activityLogger.log(currentUser, updatedUser, 'user', 'updated');
-          reply.code(200).send({ message: "User update synced Successfully" });
+          reply.code(200).send({ message: 'User update synced Successfully' });
         })
         .catch((error: FastifyError) => {
           if (error instanceof ValidationError) {

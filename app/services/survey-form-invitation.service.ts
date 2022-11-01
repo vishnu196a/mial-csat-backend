@@ -197,7 +197,7 @@ async function getActiveSurveyForm(
     name: surveyForm.name,
     questions: surveyForm.questions,
     survey_form_id: surveyForm.id
-  }
+  };
 }
 
 async function getInvitationById(id: number) {
@@ -211,8 +211,8 @@ async function update(id: number, currentUser: UserInstance) {
   return SurveyFormInvitation.update({
     resent_at: new Date(),
     resent_by_id: currentUser.id
-  }, {
-    where: { id: id }
+  },                                 {
+    where: { id }
   });
 }
 

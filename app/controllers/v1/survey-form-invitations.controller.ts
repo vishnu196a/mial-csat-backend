@@ -58,8 +58,8 @@ function detail(req: FastifyRequest, reply: FastifyReply) {
 function activeSurveyForm(req: FastifyRequest, reply: FastifyReply) {
   const queryParams = req.query as SurveyFormInvitationParams;
   getActiveSurveyForm(queryParams)
-    .then((activeSurveyForm) => {
-      reply.code(200).send(activeSurveyForm);
+    .then((SurveyForm) => {
+      reply.code(200).send(SurveyForm);
     })
     .catch((error) => {
       if (error instanceof ValidationError) {
