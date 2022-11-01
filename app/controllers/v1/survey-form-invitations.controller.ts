@@ -3,8 +3,9 @@ import { ValidationError } from 'sequelize';
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 
 import {
+  update,
   createInvitation,
-  resentInvitation,
+  getInvitationById,
   filterAndPaginate,
   getActiveSurveyForm,
   verifyAndSendInvitationForm,
@@ -86,10 +87,21 @@ function createSurveyFormInvitation(req: FastifyRequest, reply: FastifyReply) {
     });
 }
 
-function resend(req: FastifyRequest, reply: FastifyReply) {
+function getSurveyFormInvitation(req: FastifyRequest, reply: FastifyReply) {
+  const { id } = req.params as { id: number };
+  getInvitationById(id)
+    .then((surveyFormInvitation) => {
+      reply.code(200).send(surveyFormInvitation);
+    })
+    .catch((error) => {
+      reply.send(error);
+    });
+}
+
+function updateSurveyFormInvitation(req: FastifyRequest, reply: FastifyReply) {
   const { id } = req.params as { id: number };
   const currentUser = req.currentUser;
-  resentInvitation(id, currentUser)
+  update(id, currentUser)
     .then(() => {
       reply.code(200).send({
         message: 'The survey form invitation has been resent'
@@ -103,8 +115,9 @@ function resend(req: FastifyRequest, reply: FastifyReply) {
 export {
   list,
   detail,
-  resend,
+  getSurveyFormInvitation,
   activeSurveyForm,
+  updateSurveyFormInvitation,
   sendInvitationForm,
   createSurveyFormInvitation
 };

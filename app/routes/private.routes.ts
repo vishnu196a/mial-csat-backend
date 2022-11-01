@@ -4,6 +4,7 @@ import { UserInstance } from '../types';
 import { FastifyInstance } from 'fastify';
 import { surveyFormsPrivateRoutes } from './survey-forms';
 import { surveyFormResponsesPrivateRoutes } from './survey-form-responses';
+import { surveyFormInvitationsPrivateRoutes } from './survey-form-invitations';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 
 declare module 'fastify' {
@@ -20,6 +21,7 @@ function privateRoutes(
   addUserAuthHook(fastify);
   fastify.register(surveyFormsPrivateRoutes);
   fastify.register(surveyFormResponsesPrivateRoutes);
+  fastify.register(surveyFormInvitationsPrivateRoutes);
   next();
 }
 

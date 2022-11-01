@@ -193,28 +193,33 @@ async function getActiveSurveyForm(
   const user = await User.findOne({ where: { agent_code: agent.number } });
   if (!user) throw new Error('Agent not found');
 
- return {
+  return {
     name: surveyForm.name,
     questions: surveyForm.questions,
     survey_form_id: surveyForm.id
   }
 }
 
-
-async function resentInvitation(id: number, currentUser: UserInstance) {
+async function getInvitationById(id: number) {
   const currentInvitation = await SurveyFormInvitation.findOne({ where: { id } });
   if (!currentInvitation) throw new EmptyResultError('Survey form invitation not found');
 
-  return currentInvitation.update({
+  return currentInvitation;
+}
+
+async function update(id: number, currentUser: UserInstance) {
+  return SurveyFormInvitation.update({
     resent_at: new Date(),
     resent_by_id: currentUser.id
+  }, {
+    where: { id: id }
   });
 }
 
-
 export {
+  update,
   createInvitation,
-  resentInvitation,
+  getInvitationById,
   filterAndPaginate,
   getActiveSurveyForm,
   surveyFormInvitationDetail,
