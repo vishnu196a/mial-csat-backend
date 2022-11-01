@@ -2,6 +2,7 @@ export * from './user';
 export * from './role';
 export * from './agent';
 export * from './survey-form';
+export * from './users.controller';
 export * from './sessions.controller';
 export * from './survey-form-response';
 export * from './survey-form-invitation';
