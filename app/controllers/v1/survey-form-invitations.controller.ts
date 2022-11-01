@@ -7,7 +7,7 @@ import {
   resentInvitation,
   filterAndPaginate,
   getActiveSurveyForm,
-  verifyAndSendInvitation,
+  verifyAndSendInvitationForm,
   surveyFormInvitationDetail
 } from '../../services/survey-form-invitation.service';
 
@@ -17,9 +17,9 @@ import {
   SurveyFormInvitationListQueryParams
 } from '../../types';
 
-function sendInvitation(req: FastifyRequest, reply: FastifyReply) {
+function sendInvitationForm(req: FastifyRequest, reply: FastifyReply) {
   const { t: token } = req.query as { t: string };
-  verifyAndSendInvitation(token)
+  verifyAndSendInvitationForm(token)
     .then((surveyInvitation) => {
       reply.code(200).send(surveyInvitation);
     })
@@ -104,7 +104,7 @@ export {
   list,
   detail,
   resend,
-  sendInvitation,
   activeSurveyForm,
+  sendInvitationForm,
   createSurveyFormInvitation
 };

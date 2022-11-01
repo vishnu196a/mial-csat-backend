@@ -72,7 +72,7 @@ async function createInvitation(attrs: SurveyFormInvitationCreateParams) {
   });
 }
 
-async function verifyAndSendInvitation(
+async function verifyAndSendInvitationForm(
   token: string,
 ) {
   if (!token) throw new Error('Invalid invitation');
@@ -217,6 +217,6 @@ export {
   resentInvitation,
   filterAndPaginate,
   getActiveSurveyForm,
-  verifyAndSendInvitation,
-  surveyFormInvitationDetail
+  surveyFormInvitationDetail,
+  verifyAndSendInvitationForm
 };

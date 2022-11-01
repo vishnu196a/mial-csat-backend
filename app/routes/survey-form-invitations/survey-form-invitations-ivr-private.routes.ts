@@ -13,7 +13,7 @@ function surveyFormInvitationsIVRPrivateRoutes(
 
   fastify.route({
     method: 'GET',
-    url: '/v1/surveys/invitation',
+    url: '/v1/surveys/activeform',
     schema: getActiveSurveyFormRouterOpts,
     handler: activeSurveyForm
   });
