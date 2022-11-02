@@ -46,6 +46,7 @@ const userAuthenticate = (fastify: FastifyInstance) => {
       } else {
         try {
           const userAttrs = await verifyToken(token, JWT_SECRET_KEY);
+
           const user = await User.findOne({
             where: { id: userAttrs.id }
           });

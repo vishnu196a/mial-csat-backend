@@ -1,12 +1,10 @@
 export interface LoginBodyParams {
-  email: string;
-  password: string;
-}
-
-export interface LoginServiceParams {
-  email: string;
-  password: string;
-  ipaddress: string;
+  access_token: string;
+  current_sign_in_at: Date;
+  current_sign_in_ip: string;
+  sign_in_count: number;
+  last_sign_in_at: Date;
+  last_sign_in_ip: string;
 }
 
 export interface JwtTokenUserAttributes {
