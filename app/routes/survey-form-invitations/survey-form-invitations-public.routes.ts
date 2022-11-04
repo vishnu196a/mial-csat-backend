@@ -10,7 +10,7 @@ function surveyFormInvitationPublicRoutes(
   next: (err?: Error) => void
 ) {
   fastify.get(
-    '/v1/surveys/invitation_form',
+    '/v1/surveys/invitation',
     invitationFormRouterOpts,
     sendInvitationForm
   );
