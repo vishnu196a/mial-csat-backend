@@ -1,4 +1,4 @@
-import { headers, signInUserProfile } from '../shared-schema';
+import { headers } from '../shared-schema';
 
 const loginRouterOpts = {
   schema: {
