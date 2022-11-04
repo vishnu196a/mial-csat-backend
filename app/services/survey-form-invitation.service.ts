@@ -211,7 +211,7 @@ async function update(id: number, currentUser: UserInstance) {
   return SurveyFormInvitation.update({
     resent_at: new Date(),
     resent_by_id: currentUser.id
-  }, { where: { id } }); // tslint:disable-next-line
+  }, { where: { id } }); // tslint:disable-line
 }
 
 export {
