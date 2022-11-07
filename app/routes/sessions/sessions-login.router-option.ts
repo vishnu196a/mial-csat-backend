@@ -2,6 +2,7 @@ import { headers } from '../shared-schema';
 
 const loginRouterOpts = {
   schema: {
+    headers,
     description: 'post user credentials',
     tags: [
       'sessions',

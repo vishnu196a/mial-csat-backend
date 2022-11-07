@@ -12,12 +12,10 @@ export interface JwtTokenUserAttributes {
   email: string;
 }
 
-export interface JwtResetTokenUserAttributes {
-  id: number;
-  email: string;
-  type: string;
+export interface JwtTokenIVRAttributes {
+  name: string;
 }
 
-export interface JwtTokenIVRAttributes {
+export interface JwtTokenCRMAttributes {
   name: string;
 }

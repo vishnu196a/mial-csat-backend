@@ -5,7 +5,7 @@ import { FastifyInstance } from 'fastify';
 
 import { IncomingMessage, Server, ServerResponse } from 'http';
 
-function sessionsPublicRoutes(
+function sessionsSecuredRoutes(
   fastify: FastifyInstance<Server, IncomingMessage, ServerResponse>,
   opts: { prefix: string },
   next: (err?: Error) => void
@@ -13,4 +13,4 @@ function sessionsPublicRoutes(
   fastify.put('/v1/login/sync/:id', loginRouterOpts, loginSync);
   next();
 }
-export default sessionsPublicRoutes;
+export default sessionsSecuredRoutes;

@@ -8,7 +8,7 @@ function loginSync(req: FastifyRequest, reply: FastifyReply) {
   const { id } = req.params as { id: number };
   signin(id, attrs)
     .then(() => {
-      reply.code(200).send({ message: 'sigin synced successfully' });
+      reply.code(200).send({ message: 'Sigin synced successfully' });
     })
     .catch((error) => {
       reply.send(error);
