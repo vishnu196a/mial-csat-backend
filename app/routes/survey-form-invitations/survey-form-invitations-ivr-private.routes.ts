@@ -21,7 +21,6 @@ function surveyFormInvitationsIVRPrivateRoutes(
   fastify.route({
     method: 'POST',
     url: '/v1/surveys/invitation/create',
-    schema: createSurveyFormInvitationRouterOpts,
     handler: createSurveyFormInvitation
   });
   next();

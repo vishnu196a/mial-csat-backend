@@ -2,6 +2,7 @@ import addSecuredAuthHook from '../hooks/secured-authentication.hook';
 
 import { FastifyInstance } from 'fastify';
 import { sessionsSecuredRoutes } from './sessions';
+import { surveyFormInvitationSecuredRoutes } from './survey-form-invitations';
 import { Server, ServerResponse, IncomingMessage } from 'http';
 
 function securedRoutes(
@@ -11,6 +12,7 @@ function securedRoutes(
 ) {
   addSecuredAuthHook(fastify);
   fastify.register(sessionsSecuredRoutes);
+  fastify.register(surveyFormInvitationSecuredRoutes);
   next();
 }
 
