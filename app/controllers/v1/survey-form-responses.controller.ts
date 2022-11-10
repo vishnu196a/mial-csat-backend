@@ -1,3 +1,4 @@
+import logger from '../../config/logger';
 import activityLogger from '../../config/activity-logger';
 import { ValidationError } from 'sequelize';
 import { add, detail, filterAndPaginate } from '../../services/survey-form-response.service';
@@ -37,7 +38,9 @@ function addSurveyFormResponse(req: FastifyRequest, reply: FastifyReply) {
   const params = req.body as AddSurveyFormResponseParams;
   add(params)
     .then((surveyFormResponse) => {
-      activityLogger.log(req.currentUser, surveyFormResponse, 'survey form response', 'created');
+      logger.info({
+        surveyFormResponse, msg: 'survey form response created successfully'
+      });
       reply.code(201).send(surveyFormResponse);
     })
     .catch((error: FastifyError) => {
