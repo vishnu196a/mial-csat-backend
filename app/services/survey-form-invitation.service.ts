@@ -184,19 +184,10 @@ async function getActiveSurveyForm(
   if (!surveyForm) {
     throw new EmptyResultError('Survey Form not found');
   }
-
   await checkInvitationSentStatus(attrs, surveyForm.id, SURVEY_FORM_INVITATION_TYPE.mobile);
 
-  const agent = await Agent.findByPk(attrs.agent_id);
-  if (!agent) throw new Error('Agent id not found');
-
-  const user = await User.findOne({ where: { agent_code: agent.number } });
-  if (!user) throw new Error('Agent not found');
-
   return {
-    name: surveyForm.name,
-    questions: surveyForm.questions,
-    survey_form_id: surveyForm.id
+    id: surveyForm.id
   };
 }
 

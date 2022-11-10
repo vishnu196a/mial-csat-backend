@@ -19,3 +19,7 @@ export interface SurveyFormInvitationMobileParams {
   contact: string;
   agent_id: number;
 }
+
+export interface GetSurveyInvitationParams {
+  id: bigint;
+}
