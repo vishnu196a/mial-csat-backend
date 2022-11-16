@@ -25,7 +25,11 @@ function sendInvitationForm(req: FastifyRequest, reply: FastifyReply) {
       reply.code(200).send(surveyInvitation);
     })
     .catch((error: FastifyError) => {
-      reply.send(error);
+      if (error instanceof ValidationError) {
+        reply.send(error);
+      } else {
+        reply.code(422).send({ errors: [error.message] });
+      }
     });
 }
 
