@@ -28,6 +28,13 @@ const createSurveyFormInvitationRouterOpts = {
           message: { type: 'string' }
         }
       },
+      422: {
+        description: 'Unprocessable entity',
+        type: 'object',
+        properties: {
+          errors: { type: 'array', items: { type: 'string' } }
+        }
+      },
       500: {
         description: 'Something went wrong',
         type: 'object',

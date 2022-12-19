@@ -7,39 +7,26 @@ import {
   UserUpdateParams,
 } from '../types';
 
-function getUserByEmail(email: string): Promise<UserInstance> {
-  return User.findOne({ where: { email } }).then(
-    (user: UserInstance | null) => {
-      if (user) {
-        return user;
-      }
-      throw new EmptyResultError('User not found');
-    }
-  );
+async function getUserByEmail(email: string) {
+  const user = await User.findOne({ where: { email } });
+  if (!user) throw new EmptyResultError('User not found');
+  return user;
 }
 
-function getAUser(queryAttrs): Promise<UserInstance> {
-  return User.findOne({ ...queryAttrs });
+async function getAUser(queryAttrs) {
+  return await User.findOne({ ...queryAttrs });
 }
 
-function getUserById(id: number) {
-  return User.findByPk(id)
-    .then((user: UserInstance | null) => {
-      if (!user) {
-        throw new EmptyResultError('User not found');
-      }
-      return user;
-    });
+async function getUserById(id: number) {
+  const user = await User.findByPk(id);
+  if (!user) throw new EmptyResultError('User not found');
+  return user;
 }
 
-function getConfirmedUserByEmail(email: string): Promise<UserInstance> {
-  return User.findOne({ where: { email } })
-    .then((user: UserInstance | null) => {
-      if (user) {
-        return user;
-      }
-      throw new EmptyResultError('User not found');
-    });
+async function getConfirmedUserByEmail(email: string) {
+  const user = await User.findOne({ where: { email } });
+  if (!user) throw new EmptyResultError('User not found');
+  return user;
 }
 
 async function add(attrs: AddUserParams) {
@@ -57,11 +44,10 @@ async function update(id: number, attrs: UserUpdateParams) {
     agent_code: attrs.agent_code,
   });
   const userRole = await updatedUser.getRole();
-  const userData = {
+  return {
     ...updatedUser.toJSON(),
     role: userRole.name
   };
-  return userData;
 }
 
 async function userDelete(id: number) {
