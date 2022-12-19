@@ -181,9 +181,7 @@ async function getActiveSurveyForm(
   attrs: SurveyFormInvitationParams
 ) {
   const surveyForm = await SurveyForm.findOne({ where: { is_active: true } });
-  if (!surveyForm) {
-    throw new EmptyResultError('Survey Form not found');
-  }
+  if (!surveyForm) throw new EmptyResultError('Survey Form not found');
 
   await checkInvitationSentStatus(attrs, surveyForm.id, SURVEY_FORM_INVITATION_TYPE.mobile);
 
@@ -193,7 +191,7 @@ async function getActiveSurveyForm(
   const user = await User.findOne({ where: { agent_code: agent.number } });
   if (!user) throw new Error('Agent not found');
 
- return {
+  return {
     name: surveyForm.name,
     questions: surveyForm.questions,
     survey_form_id: surveyForm.id
