@@ -1,10 +1,10 @@
 import logger from '../config/logger';
 
-import { User } from '../models';
 import { verify as jwtVerify } from 'jsonwebtoken';
-import { JwtTokenUserAttributes } from '../types';
+import { JwtTokenCRMAttributes } from '../types';
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-const { JWT_SECRET_KEY = '' } = process.env;
+
+const { JWT_SECRET_KEY_FOR_CSAT = '' } = process.env;
 
 function getHeaderToken(headers: any) {
   const bearerHeader = headers.authorization;
@@ -16,12 +16,12 @@ function getHeaderToken(headers: any) {
 function verifyToken(
   token: string,
   secretKey: string
-): Promise<JwtTokenUserAttributes> {
+): Promise<JwtTokenCRMAttributes> {
   return new Promise((resolve, reject) =>
     jwtVerify(
       token,
       secretKey,
-      (err: string, decoded: JwtTokenUserAttributes) => {
+      (err: string, decoded: JwtTokenCRMAttributes) => {
         if (err) {
           reject(err);
         } else {
@@ -32,7 +32,7 @@ function verifyToken(
   );
 }
 
-const userAuthenticate = (fastify: FastifyInstance) => {
+const securedAuthenticate = (fastify: FastifyInstance) => {
   fastify.decorateRequest('currentUser', null);
   fastify.addHook(
     'preHandler',
@@ -45,15 +45,10 @@ const userAuthenticate = (fastify: FastifyInstance) => {
         reply.code(401).send(error);
       } else {
         try {
-          const userAttrs = await verifyToken(token, JWT_SECRET_KEY);
-
-          const user = await User.findOne({
-            where: { id: userAttrs.id }
-          });
-          if (user && user.access_token === token) {
-            req.currentUser = user;
-            reply.header('Authorization', `Bearer ${token}`);
-          } else {
+          const crmUserAttrs = await verifyToken(
+            token, JWT_SECRET_KEY_FOR_CSAT
+          );
+          if (!crmUserAttrs) {
             const error = {
               errors: ['Session has expired']
             };
@@ -67,4 +62,4 @@ const userAuthenticate = (fastify: FastifyInstance) => {
     }
   );
 };
-export default userAuthenticate;
+export default securedAuthenticate;

@@ -1,3 +1,4 @@
+import nanoid from 'nanoid';
 import { EmptyResultError } from 'sequelize';
 
 import { map, size } from 'lodash';
@@ -11,13 +12,18 @@ import {
   SurveyFormResponse,
   SurveyFormInvitation,
 } from '../models';
+
 import {
   Q_MINIMUM_SIZE,
+  SURVEY_FORM_INVITATION_TYPE,
   SURVEY_FORM_INVITATAION_STATUS
 } from '../config/constants';
+
 import {
   UserInstance,
+  SurveyFormInvitationParams,
   SurveyFormInvitationInstance,
+  SurveyFormInvitationCreateParams,
   SurveyFormInvitationListQueryParams
 } from '../types';
 
@@ -54,7 +60,19 @@ async function checkInvitationSentStatus(attrs, surveyFormId, type) {
   }
 }
 
-async function verifyAndSendInvitation(
+async function createInvitation(attrs: SurveyFormInvitationCreateParams) {
+  return await SurveyFormInvitation.create({
+    type: attrs.type,
+    user_id: attrs.user_id,
+    call_id: attrs.call_id,
+    contact: attrs.contact,
+    survey_form_id: attrs.survey_form_id,
+    invitation_url: attrs.invitation_url,
+    status: SURVEY_FORM_INVITATAION_STATUS.sent,
+  });
+}
+
+async function verifyAndSendInvitationForm(
   token: string,
 ) {
   if (!token) throw new Error('Invalid invitation');
@@ -159,20 +177,38 @@ async function surveyFormInvitationDetail(id: number) {
   return invitationData;
 }
 
-async function resentInvitation(id: number, currentUser: UserInstance) {
+async function getActiveSurveyForm(
+  attrs: SurveyFormInvitationParams
+) {
+  const surveyForm = await SurveyForm.findOne({ where: { is_active: true } });
+  if (!surveyForm) throw new EmptyResultError('Survey Form not found');
+
+  await checkInvitationSentStatus(attrs, surveyForm.id, SURVEY_FORM_INVITATION_TYPE.mobile);
+  return {
+    id: surveyForm.id
+  };
+}
+
+async function getInvitationById(id: number) {
   const currentInvitation = await SurveyFormInvitation.findOne({ where: { id } });
   if (!currentInvitation) throw new EmptyResultError('Survey form invitation not found');
 
-  return currentInvitation.update({
-    resent_at: new Date(),
-    resent_by_id: currentUser.id
-  });
+  return currentInvitation;
 }
 
+async function update(id: number, currentUser: UserInstance) {
+  return SurveyFormInvitation.update({
+    resent_at: new Date(),
+    resent_by_id: currentUser.id
+  }, { where: { id } }); // tslint:disable-line
+}
 
 export {
-  resentInvitation,
+  update,
+  createInvitation,
+  getInvitationById,
   filterAndPaginate,
-  verifyAndSendInvitation,
+  getActiveSurveyForm,
   surveyFormInvitationDetail,
+  verifyAndSendInvitationForm
 };

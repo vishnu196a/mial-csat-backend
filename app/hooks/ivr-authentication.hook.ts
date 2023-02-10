@@ -1,10 +1,13 @@
 import logger from '../config/logger';
 
-import { User } from '../models';
 import { verify as jwtVerify } from 'jsonwebtoken';
-import { JwtTokenUserAttributes } from '../types';
+import { JwtTokenIVRAttributes } from '../types';
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-const { JWT_SECRET_KEY = '' } = process.env;
+
+const {
+  IVR_USER_NAME = '',
+  JWT_SECRET_KEY_FOR_IVR = ''
+} = process.env;
 
 function getHeaderToken(headers: any) {
   const bearerHeader = headers.authorization;
@@ -16,12 +19,12 @@ function getHeaderToken(headers: any) {
 function verifyToken(
   token: string,
   secretKey: string
-): Promise<JwtTokenUserAttributes> {
+): Promise<JwtTokenIVRAttributes> {
   return new Promise((resolve, reject) =>
     jwtVerify(
       token,
       secretKey,
-      (err: string, decoded: JwtTokenUserAttributes) => {
+      (err: string, decoded: JwtTokenIVRAttributes) => {
         if (err) {
           reject(err);
         } else {
@@ -32,8 +35,7 @@ function verifyToken(
   );
 }
 
-const userAuthenticate = (fastify: FastifyInstance) => {
-  fastify.decorateRequest('currentUser', null);
+const ivrAuthHook = (fastify: FastifyInstance) => {
   fastify.addHook(
     'preHandler',
     async (req: FastifyRequest, reply: FastifyReply) => {
@@ -45,15 +47,15 @@ const userAuthenticate = (fastify: FastifyInstance) => {
         reply.code(401).send(error);
       } else {
         try {
-          const userAttrs = await verifyToken(token, JWT_SECRET_KEY);
-
-          const user = await User.findOne({
-            where: { id: userAttrs.id }
-          });
-          if (user && user.access_token === token) {
-            req.currentUser = user;
-            reply.header('Authorization', `Bearer ${token}`);
-          } else {
+          const ivrUserAttrs = await verifyToken(
+            token, JWT_SECRET_KEY_FOR_IVR
+          );
+          if (!(
+            ivrUserAttrs
+            && (
+              ivrUserAttrs.name === IVR_USER_NAME
+            )
+          )) {
             const error = {
               errors: ['Session has expired']
             };
@@ -67,4 +69,5 @@ const userAuthenticate = (fastify: FastifyInstance) => {
     }
   );
 };
-export default userAuthenticate;
+
+export { ivrAuthHook };

@@ -17,3 +17,8 @@ export const SURVEY_FORM_INVITATAION_STATUS = {
   sent: 'Sent',
   responded: 'Responded'
 };
+
+export const SURVEY_FORM_INVITATION_TYPE = {
+  email: 'Email',
+  mobile: 'SMS'
+};

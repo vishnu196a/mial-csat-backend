@@ -5,10 +5,6 @@ const baseUrl = trimStart(process.env.BASE_URL, 'https://');
 
 const tagOrder = [
   {
-    name: 'users',
-    description: 'routes related to user'
-  },
-  {
     name: 'ivr',
     description: 'routes related to ivr'
   },
@@ -27,6 +23,10 @@ const tagOrder = [
   {
     name: 'survey-form-invitations',
     description: 'routes related to survey form invitations'
+  },
+  {
+    name: 'survey-form-responses',
+    description: 'routes related to survey form response'
   }
 ];
 
