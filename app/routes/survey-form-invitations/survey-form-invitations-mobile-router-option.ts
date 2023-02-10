@@ -1,4 +1,4 @@
-import { headers } from '../shared-schema';
+import { adminSecureErrors, headers } from '../shared-schema';
 
 const surveyFormInvitationMobileRouterOpts = {
   headers,
@@ -7,7 +7,7 @@ const surveyFormInvitationMobileRouterOpts = {
     'ivr',
     'survey-form-invitations'
   ],
-  body: {
+  querystring: {
     type: 'object',
     required: ['contact', 'call_id'],
     properties: {
@@ -21,16 +21,10 @@ const surveyFormInvitationMobileRouterOpts = {
       description: 'Successfully sent survey form invitation to mobile',
       type: 'object',
       properties: {
-        message: { type: 'string' }
-      }
-    },
-    500: {
-      description: 'Something went wrong',
-      type: 'object',
-      properties: {
-        errors: { type: 'array', items: { type: 'string' } }
+        id: { type: 'number' }
       }
     }
-  }
+  },
+  ...adminSecureErrors
 };
 export default surveyFormInvitationMobileRouterOpts;

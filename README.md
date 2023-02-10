@@ -1,2 +1,2 @@
-# mial-crm-backend
-To develop new CRM for unified communication project
+# mial-csat-backend
+To develop new CSAT for unified communication project

@@ -1,4 +1,4 @@
-import { ValidationError } from 'sequelize';
+import { EmptyResultError, ValidationError } from 'sequelize';
 
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 
@@ -62,7 +62,7 @@ function activeSurveyForm(req: FastifyRequest, reply: FastifyReply) {
       reply.code(200).send(surveyForm);
     })
     .catch((error) => {
-      if (error instanceof ValidationError) {
+      if (error instanceof ValidationError || error instanceof EmptyResultError) {
         reply.send(error);
       } else {
         reply.code(422).send({ errors: [error.message] });
