@@ -1,8 +1,8 @@
 import { headers } from '../shared-schema';
 
-const invitationResendRouterOpts = {
+const getSurveyFormInvitationRouterOpts = {
   headers,
-  description: 'resend survey form invitation',
+  description: 'get survey form invitation',
   tags: [
     'admin-role',
     'survey-form-invitations'
@@ -19,7 +19,10 @@ const invitationResendRouterOpts = {
       description: 'Successfully resent survey form invitation',
       type: 'object',
       properties: {
-        message: { type: 'string' }
+        id: { type: 'number' },
+        type: { type: 'string' },
+        contact: { type: 'string' },
+        invitation_url: { type: 'string' }
       }
     },
     500: {
@@ -31,4 +34,4 @@ const invitationResendRouterOpts = {
     }
   }
 };
-export default invitationResendRouterOpts;
+export default getSurveyFormInvitationRouterOpts;

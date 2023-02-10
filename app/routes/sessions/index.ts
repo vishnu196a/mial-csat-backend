@@ -1,7 +1,7 @@
-import sessionsPublicRoutes from './sessions-public.routes';
+import sessionsSecuredRoutes from './sessions-secured.routes';
 import sessionsPrivateRoutes from './sessions-private.routes';
 
 export {
-  sessionsPublicRoutes,
+  sessionsSecuredRoutes,
   sessionsPrivateRoutes
 };

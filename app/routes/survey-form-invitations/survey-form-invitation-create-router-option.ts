@@ -1,36 +1,35 @@
 import { headers } from '../shared-schema';
 
-const loginRouterOpts = {
+const createSurveyFormInvitationRouterOpts = {
   schema: {
     headers,
-    description: 'post user credentials',
+    description: 'create survey form invitation',
     tags: [
-      'sessions',
-      'admin-role',
-      'agent-role'
+      'ivr',
+      'survey-form-invitations'
     ],
     body: {
       type: 'object',
       properties: {
-        access_token: { type: 'string' },
-        sign_in_count: { type: 'number' },
-        last_sign_in_at: { type: 'string' },
-        last_sign_in_ip: { type: 'string' },
-        current_sign_in_at: { type: 'string' },
-        current_sign_in_ip: { type: 'string' }
+        type: { type: 'string', enum: ['SMS', 'Email'] },
+        call_id: { type: 'number' },
+        contact: { type: 'string' },
+        user_id: { type: 'number' },
+        agent_id: { type: 'number' },
+        survey_form_id: { type: 'number' },
+        invitation_url: { type: 'string' }
       }
     },
     response: {
-      headers,
       200: {
-        description: 'Successfully logged in',
+        description: 'Survey form invitation Created Successfully ',
         type: 'object',
         properties: {
           message: { type: 'string' }
         }
       },
-      401: {
-        description: 'Invalid email or password',
+      422: {
+        description: 'Unprocessable entity',
         type: 'object',
         properties: {
           errors: { type: 'array', items: { type: 'string' } }
@@ -47,4 +46,4 @@ const loginRouterOpts = {
   }
 };
 
-export default loginRouterOpts;
+export default createSurveyFormInvitationRouterOpts;

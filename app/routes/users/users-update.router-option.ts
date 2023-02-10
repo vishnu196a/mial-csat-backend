@@ -27,21 +27,10 @@ const updateUserRouterOpts = {
   response: {
     headers,
     200: {
-      description: 'user has been updated',
+      description: 'user update sync successfully',
       type: 'object',
       properties: {
-        id: { type: 'number' },
-        name: { type: 'string' },
-        role: {
-          type: 'string',
-          enum: ['Admin', 'Agent']
-        },
-        email: { type: 'string' },
-        mobile_no: { type: 'string' },
-        employee_number: { type: 'string' },
-        agent_code: { type: 'string' },
-        created_at: { type: 'string' },
-        updated_at: { type: 'string' }
+        message: { type: 'string' }
       }
     },
     404: {

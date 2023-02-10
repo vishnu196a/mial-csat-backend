@@ -1,11 +1,7 @@
 import nanoid from 'nanoid';
-
-import { SessionError } from '../exceptions';
 import { EmptyResultError } from 'sequelize';
-import { sendMessageToUser } from '../services/sms.service';
 
 import { map, size } from 'lodash';
-import { sendSurveyFormInvitation } from '../services/mailer.service';
 import { paginate, paginatorResult } from '../lib/paginator-result';
 import { columnSearchQuery, globalSearchQuery } from '../queries/survey-form-invitation';
 
@@ -16,16 +12,18 @@ import {
   SurveyFormResponse,
   SurveyFormInvitation,
 } from '../models';
+
 import {
   Q_MINIMUM_SIZE,
   SURVEY_FORM_INVITATION_TYPE,
   SURVEY_FORM_INVITATAION_STATUS
 } from '../config/constants';
+
 import {
   UserInstance,
+  SurveyFormInvitationParams,
   SurveyFormInvitationInstance,
-  SurveyFormInvitationEmailParams,
-  SurveyFormInvitationMobileParams,
+  SurveyFormInvitationCreateParams,
   SurveyFormInvitationListQueryParams
 } from '../types';
 
@@ -62,96 +60,19 @@ async function checkInvitationSentStatus(attrs, surveyFormId, type) {
   }
 }
 
-async function createInvitation(
-  attrs: SurveyFormInvitationEmailParams,
-  userId: bigint,
-  surveyFormId: bigint,
-  invitationUrl: string,
-  type: string
-) {
-  const surveyInvitation = await SurveyFormInvitation.create({
-    type,
-    user_id: userId,
+async function createInvitation(attrs: SurveyFormInvitationCreateParams) {
+  return await SurveyFormInvitation.create({
+    type: attrs.type,
+    user_id: attrs.user_id,
     call_id: attrs.call_id,
     contact: attrs.contact,
-    survey_form_id: surveyFormId,
-    invitation_url: invitationUrl,
+    survey_form_id: attrs.survey_form_id,
+    invitation_url: attrs.invitation_url,
     status: SURVEY_FORM_INVITATAION_STATUS.sent,
   });
-  return surveyInvitation;
 }
 
-async function surveyFormEmailInvitation(
-  attrs: SurveyFormInvitationEmailParams
-) {
-  try {
-    const surveyForm = await SurveyForm.findOne({ where: { is_active: true } });
-
-    if (surveyForm) {
-      await checkInvitationSentStatus(attrs, surveyForm.id, SURVEY_FORM_INVITATION_TYPE.email);
-
-      const agent = await Agent.findByPk(attrs.agent_id);
-      if (!agent) throw new Error('Agent id not found');
-
-      const user = await User.findOne({ where: { agent_code: agent.number } });
-      if (!user) throw new Error('Agent not found');
-
-      const token = nanoid.nanoid(10);
-      const invitationUrl = sendSurveyFormInvitation(attrs, token);
-      return createInvitation(
-        attrs,
-        user.id,
-        surveyForm.id,
-        invitationUrl,
-        SURVEY_FORM_INVITATION_TYPE.email
-      );
-    }
-    throw new EmptyResultError('Survey Form not found');
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function surveyFormMobileInvitation(
-  attrs: SurveyFormInvitationMobileParams
-) {
-  try {
-    const { contact } = attrs;
-
-    const surveyForm = await SurveyForm.findOne({ where: { is_active: true } });
-
-    if (surveyForm) {
-      await checkInvitationSentStatus(attrs, surveyForm.id, SURVEY_FORM_INVITATION_TYPE.mobile);
-
-      const agent = await Agent.findByPk(attrs.agent_id);
-      if (!agent) throw new Error('Agent id not found');
-
-      const user = await User.findOne({ where: { agent_code: agent.number } });
-      if (!user) throw new Error('Agent not found');
-
-      const token = nanoid.nanoid(10);
-      const invitationUrl = `${process.env.SURVEY_FORM_INVITATION_URL}?t=${token}`;
-      sendMessageToUser(
-        contact,
-        `Thank you for calling CSMIA. Please take a moment to tell us how satisfied you are with your interaction with our agent by filling out a quick survey <a href="${invitationUrl}">here</a>.
-        Team - CSMIA`
-      );
-
-      return createInvitation(
-        attrs,
-        user.id,
-        surveyForm.id,
-        invitationUrl,
-        SURVEY_FORM_INVITATION_TYPE.mobile
-      );
-    }
-    throw new EmptyResultError('Survey Form not found');
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function verifyAndSendInvitation(
+async function verifyAndSendInvitationForm(
   token: string,
 ) {
   if (!token) throw new Error('Invalid invitation');
@@ -256,32 +177,38 @@ async function surveyFormInvitationDetail(id: number) {
   return invitationData;
 }
 
-async function resentInvitation(id: number, currentUser: UserInstance) {
+async function getActiveSurveyForm(
+  attrs: SurveyFormInvitationParams
+) {
+  const surveyForm = await SurveyForm.findOne({ where: { is_active: true } });
+  if (!surveyForm) throw new EmptyResultError('Survey Form not found');
+
+  await checkInvitationSentStatus(attrs, surveyForm.id, SURVEY_FORM_INVITATION_TYPE.mobile);
+  return {
+    id: surveyForm.id
+  };
+}
+
+async function getInvitationById(id: number) {
   const currentInvitation = await SurveyFormInvitation.findOne({ where: { id } });
   if (!currentInvitation) throw new EmptyResultError('Survey form invitation not found');
 
-  const token = currentInvitation.invitation_url.split('?t=')[1];
-  if (currentInvitation.type === SURVEY_FORM_INVITATION_TYPE.email) {
-    sendSurveyFormInvitation(currentInvitation, token);
-    return currentInvitation;
-  }
+  return currentInvitation;
+}
 
-  sendMessageToUser(
-    currentInvitation.contact,
-    `Thank you for calling CSMIA. Please take a moment to tell us how satisfied you are with your interaction with our agent by filling out a quick survey <a href="${process.env.SURVEY_FORM_INVITATION_URL}?t=${token}">here</a>.
-    Team - CSMIA`
-  );
-  return currentInvitation.update({
+async function update(id: number, currentUser: UserInstance) {
+  return SurveyFormInvitation.update({
     resent_at: new Date(),
     resent_by_id: currentUser.id
-  });
+  }, { where: { id } }); // tslint:disable-line
 }
 
 export {
-  resentInvitation,
+  update,
+  createInvitation,
+  getInvitationById,
   filterAndPaginate,
-  verifyAndSendInvitation,
-  surveyFormEmailInvitation,
+  getActiveSurveyForm,
   surveyFormInvitationDetail,
-  surveyFormMobileInvitation
+  verifyAndSendInvitationForm
 };

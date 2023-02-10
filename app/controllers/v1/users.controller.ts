@@ -6,17 +6,13 @@ import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 import {
   AddUserParams,
   UserUpdateParams,
-  UserListQueryParams
-} from '../../types/users.controller';
+} from '../../types';
 
 import {
   add,
-  detail,
   update,
   userDelete,
   getUserById,
-  listAllUsers,
-  filterAndPaginate
 } from '../../services/user.service';
 
 function addUser(req: FastifyRequest, reply: FastifyReply) {
@@ -24,30 +20,8 @@ function addUser(req: FastifyRequest, reply: FastifyReply) {
   const currentUser = req.currentUser;
   add(params).then((user) => {
     activityLogger.log(currentUser, user, 'user', 'created');
-    reply.code(201).send(user);
+    reply.code(201).send({ message: 'User add synced Successfully' });
   })
-    .catch((error: FastifyError) => {
-      reply.send(error);
-    });
-}
-
-function list(req: FastifyRequest, reply: FastifyReply) {
-  const query = req.query as UserListQueryParams;
-  filterAndPaginate(query)
-    .then((users) => {
-      reply.code(200).send(users);
-    })
-    .catch((error: FastifyError) => {
-      reply.send(error);
-    });
-}
-
-function detailUser(req: FastifyRequest, reply: FastifyReply) {
-  const { id } = req.params as { id: number };
-  detail(id)
-    .then((user) => {
-      reply.code(200).send(user);
-    })
     .catch((error: FastifyError) => {
       reply.send(error);
     });
@@ -62,7 +36,7 @@ function updateUser(req: FastifyRequest, reply: FastifyReply) {
       update(id, attrs)
         .then((updatedUser) => {
           activityLogger.log(currentUser, updatedUser, 'user', 'updated');
-          reply.code(200).send(updatedUser);
+          reply.code(200).send({ message: 'User update synced Successfully' });
         })
         .catch((error: FastifyError) => {
           if (error instanceof ValidationError) {
@@ -83,28 +57,15 @@ function deleteUser(req: FastifyRequest, reply: FastifyReply) {
     .then(async (user) => {
       await userDelete(id);
       activityLogger.log(currentUser, user, 'user', 'deleted');
-      reply.send({ message: 'User deleted successfully' });
+      reply.send({ message: 'User delete synced Successfully' });
     })
     .catch((error) => {
       reply.send(error);
     });
 }
 
-function listAll(req: FastifyRequest, reply: FastifyReply) {
-  listAllUsers()
-    .then((users) => {
-      reply.code(200).send(users);
-    })
-    .catch((error: FastifyError) => {
-      reply.send(error);
-    });
-}
-
 export {
-  list,
-  listAll,
   addUser,
   updateUser,
   deleteUser,
-  detailUser
 };
