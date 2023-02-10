@@ -1,6 +1,6 @@
 import logoutRouterOpts from './sessions-logout.router-option';
 
-import { logout } from '../../controllers/v1/sessions.controller';
+import { logoutSync } from '../../controllers/v1/sessions.controller';
 import { FastifyInstance } from 'fastify';
 
 import { IncomingMessage, Server, ServerResponse } from 'http';
@@ -10,7 +10,7 @@ function sessionsPrivateRoutes(
   opts: { prefix: string },
   next: (err?: Error) => void
 ) {
-  fastify.delete('/v1/logout', logoutRouterOpts, logout);
+  fastify.delete('/v1/logout/sync', logoutRouterOpts, logoutSync);
   next();
 }
 export default sessionsPrivateRoutes;

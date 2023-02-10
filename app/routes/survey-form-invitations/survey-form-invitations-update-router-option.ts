@@ -1,11 +1,11 @@
-import { headers, adminSecureErrors } from '../shared-schema';
+import { headers } from '../shared-schema';
 
-const deleteUserRouterOpts = {
+const updateSurveyFormInvitationRouterOpts = {
   headers,
-  description: 'delete user sync',
+  description: 'update survey form invitation',
   tags: [
-    'users',
-    'admin-role'
+    'admin-role',
+    'survey-form-invitations'
   ],
   params: {
     type: 'object',
@@ -15,23 +15,20 @@ const deleteUserRouterOpts = {
     }
   },
   response: {
-    headers,
     200: {
-      description: 'user delete sync successfully',
+      description: 'update survey form invitation',
       type: 'object',
       properties: {
         message: { type: 'string' }
       }
     },
-    404: {
-      description: 'no user found',
+    500: {
+      description: 'Something went wrong',
       type: 'object',
       properties: {
         errors: { type: 'array', items: { type: 'string' } }
       }
-    },
-    ...adminSecureErrors
+    }
   }
 };
-
-export default deleteUserRouterOpts;
+export default updateSurveyFormInvitationRouterOpts;

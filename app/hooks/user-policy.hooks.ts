@@ -9,20 +9,6 @@ const canAdd = async (req: FastifyRequest, reply: FastifyReply) => {
   }
 };
 
-const canView = async (req: FastifyRequest, reply: FastifyReply) => {
-  const policy = new UserPolicy(req.currentUser);
-  if (!await policy.canView()) {
-    reply.code(403).send({ errors: ['You are not allowed to performance this action'] });
-  }
-};
-
-const canViewDetail = async (req: FastifyRequest, reply: FastifyReply) => {
-  const policy = new UserPolicy(req.currentUser);
-  if (!await policy.canViewDetail()) {
-    reply.code(403).send({ errors: ['You are not allowed to performance this action'] });
-  }
-};
-
 const canUpdate = async (req: FastifyRequest, reply: FastifyReply) => {
   const policy = new UserPolicy(req.currentUser);
   if (!await policy.canUpdate()) {
@@ -41,8 +27,6 @@ const canDelete = async (req: FastifyRequest, reply: FastifyReply) => {
 
 export {
   canAdd,
-  canView,
   canUpdate,
   canDelete,
-  canViewDetail
 };

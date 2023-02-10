@@ -2,7 +2,7 @@ import { headers, adminSecureErrors } from '../shared-schema';
 
 const addUserRouterOpts = {
   headers,
-  description: 'add user',
+  description: 'sync user',
   tags: [
     'users',
     'admin-role'
@@ -18,28 +18,20 @@ const addUserRouterOpts = {
       email: { type: 'string' },
       role_id: { type: 'number' },
       mobile_no: { type: 'string' },
+      password: { type: 'string' },
+      agent_code: { type: 'string' },
+      confirmed_at: { type: 'string' },
       employee_number: { type: 'string' },
-      agent_code: { type: 'string' }
+      password_confirmation: { type: 'string' }
     }
   },
   response: {
     headers,
     201: {
-      description: 'newly added user',
+      description: 'user create synced successfully',
       type: 'object',
       properties: {
-        id: { type: 'number' },
-        name: { type: 'string' },
-        role: {
-          type: 'string',
-          enum: ['Admin', 'Agent']
-        },
-        email: { type: 'string' },
-        mobile_no: { type: 'string' },
-        employee_number: { type: 'string' },
-        agent_code: { type: 'string' },
-        created_at: { type: 'string' },
-        updated_at: { type: 'string' }
+        message: { type: 'string' }
       }
     },
     ...adminSecureErrors

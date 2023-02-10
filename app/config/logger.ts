@@ -3,7 +3,7 @@ import moment from 'moment';
 
 const logLevel = process.env.LOG_LEVEL || 'info';
 const logConfig = {
-  name: 'MIAL CRM API SERVER',
+  name: 'MIAL CSAT API SERVER',
   level: logLevel,
   timestamp: () => `,"time":"${moment()}"`,
   formatters: {

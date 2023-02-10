@@ -1,6 +1,5 @@
 import { ivrAuthHook } from '../hooks/ivr-authentication.hook';
 import { FastifyInstance } from 'fastify';
-import { ssoIVRPrivateRoutes } from './sso';
 import { surveyFormInvitationsIVRPrivateRoutes } from './survey-form-invitations';
 
 import { IncomingMessage, Server, ServerResponse } from 'http';
@@ -17,7 +16,6 @@ function privateIVRRoutes(
   next: (err?: Error) => void
 ) {
   ivrAuthHook(fastify);
-  fastify.register(ssoIVRPrivateRoutes);
   fastify.register(surveyFormInvitationsIVRPrivateRoutes);
   next();
 }
