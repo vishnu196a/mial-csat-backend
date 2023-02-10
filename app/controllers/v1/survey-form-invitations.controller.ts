@@ -1,4 +1,4 @@
-import { ValidationError } from 'sequelize';
+import { EmptyResultError, ValidationError } from 'sequelize';
 
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 
@@ -58,11 +58,11 @@ function detail(req: FastifyRequest, reply: FastifyReply) {
 function activeSurveyForm(req: FastifyRequest, reply: FastifyReply) {
   const queryParams = req.query as SurveyFormInvitationParams;
   getActiveSurveyForm(queryParams)
-    .then((activeSurveyForm) => {
-      reply.code(200).send(activeSurveyForm);
+    .then((surveyForm) => {
+      reply.code(200).send(surveyForm);
     })
     .catch((error) => {
-      if (error instanceof ValidationError) {
+      if (error instanceof ValidationError || error instanceof EmptyResultError) {
         reply.send(error);
       } else {
         reply.code(422).send({ errors: [error.message] });
