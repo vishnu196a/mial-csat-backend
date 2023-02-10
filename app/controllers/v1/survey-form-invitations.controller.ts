@@ -1,13 +1,14 @@
-import { ValidationError } from 'sequelize';
+import { EmptyResultError, ValidationError } from 'sequelize';
 
 import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 
 import {
+  update,
   createInvitation,
-  resentInvitation,
+  getInvitationById,
   filterAndPaginate,
   getActiveSurveyForm,
-  verifyAndSendInvitation,
+  verifyAndSendInvitationForm,
   surveyFormInvitationDetail
 } from '../../services/survey-form-invitation.service';
 
@@ -17,9 +18,9 @@ import {
   SurveyFormInvitationListQueryParams
 } from '../../types';
 
-function sendInvitation(req: FastifyRequest, reply: FastifyReply) {
+function sendInvitationForm(req: FastifyRequest, reply: FastifyReply) {
   const { t: token } = req.query as { t: string };
-  verifyAndSendInvitation(token)
+  verifyAndSendInvitationForm(token)
     .then((surveyInvitation) => {
       reply.code(200).send(surveyInvitation);
     })
@@ -57,11 +58,11 @@ function detail(req: FastifyRequest, reply: FastifyReply) {
 function activeSurveyForm(req: FastifyRequest, reply: FastifyReply) {
   const queryParams = req.query as SurveyFormInvitationParams;
   getActiveSurveyForm(queryParams)
-    .then((activeSurveyForm) => {
-      reply.code(200).send(activeSurveyForm);
+    .then((surveyForm) => {
+      reply.code(200).send(surveyForm);
     })
     .catch((error) => {
-      if (error instanceof ValidationError) {
+      if (error instanceof ValidationError || error instanceof EmptyResultError) {
         reply.send(error);
       } else {
         reply.code(422).send({ errors: [error.message] });
@@ -86,10 +87,21 @@ function createSurveyFormInvitation(req: FastifyRequest, reply: FastifyReply) {
     });
 }
 
-function resend(req: FastifyRequest, reply: FastifyReply) {
+function getSurveyFormInvitation(req: FastifyRequest, reply: FastifyReply) {
+  const { id } = req.params as { id: number };
+  getInvitationById(id)
+    .then((surveyFormInvitation) => {
+      reply.code(200).send(surveyFormInvitation);
+    })
+    .catch((error) => {
+      reply.send(error);
+    });
+}
+
+function updateSurveyFormInvitation(req: FastifyRequest, reply: FastifyReply) {
   const { id } = req.params as { id: number };
   const currentUser = req.currentUser;
-  resentInvitation(id, currentUser)
+  update(id, currentUser)
     .then(() => {
       reply.code(200).send({
         message: 'The survey form invitation has been resent'
@@ -103,8 +115,9 @@ function resend(req: FastifyRequest, reply: FastifyReply) {
 export {
   list,
   detail,
-  resend,
-  sendInvitation,
+  getSurveyFormInvitation,
   activeSurveyForm,
+  updateSurveyFormInvitation,
+  sendInvitationForm,
   createSurveyFormInvitation
 };

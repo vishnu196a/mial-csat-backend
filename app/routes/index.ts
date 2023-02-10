@@ -1,5 +1,6 @@
 import renderError from './render-error';
 import publicRoutes from './public.routes';
+import securedRoutes from './secured.routes';
 import privateRoutes from './private.routes';
 import privateIVRRoutes from './private-ivr.routes';
 
@@ -15,6 +16,7 @@ function routes(
     renderError(reply, error);
   });
   fastify.register(publicRoutes);
+  fastify.register(securedRoutes);
   fastify.register(privateRoutes);
   fastify.register(privateIVRRoutes);
   next();
