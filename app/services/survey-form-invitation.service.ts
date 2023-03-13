@@ -99,7 +99,7 @@ async function verifyAndSendInvitationForm(
   const user = await surveyForm.getUser({ paranoid: false });
   return {
     name: surveyForm.name,
-    questions: surveyForm.questions,
+    questions: JSON.parse(surveyForm.questions),
     created_at: surveyForm.created_at,
     updated_at: surveyForm.updated_at,
     created_by_id: surveyForm.created_by,
