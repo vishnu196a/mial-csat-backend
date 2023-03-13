@@ -29,7 +29,7 @@ export interface SurveyFormAttributes {
   created_at: Date;
   created_by: bigint;
   is_active: boolean;
-  questions: Question[];
+  questions: Question[] | any;
 }
 
 export type SurveyformCreateAttributes = Pick<
