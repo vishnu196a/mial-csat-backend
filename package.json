@@ -32,7 +32,7 @@
     "nodemailer": "^6.7.5",
     "nodemailer-sendgrid": "^1.0.3",
     "pino-pretty": "^7.6.1",
-    "read-excel-file": "^5.3.4",
+    "read-excel-file": "^5.6.1",
     "sequelize": "^6.20.0"
   },
   "devDependencies": {
